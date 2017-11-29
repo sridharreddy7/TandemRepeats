@@ -1,4 +1,5 @@
 import java.lang.StringBuffer;
+import java.util.ArrayList;
 
 public class TandemDP {
 	public static final int MATCH = 1;
@@ -10,7 +11,7 @@ public class TandemDP {
 		//findRepeats(score_matrix, sequenceA, score_threshold);
 	}
 
-	public static void buildScoringMatrix(String sequenceA) {
+	public  void buildScoringMatrix(String sequenceA) {
 
 		int res[][] = new int[sequenceA.length() + 1][sequenceA.length() + 1];
 
@@ -19,31 +20,56 @@ public class TandemDP {
 			res[i][i] = 0;
 		}
 
-		int score,max=0,maxi=0,maxj=0;
-
+		int max=0,maxi,maxj;
+		ArrayList<Position> pos = new ArrayList<>();
+		
 		for (int i = 1; i <= sequenceA.length(); i++) {
 			for (int j = i + 1; j <= sequenceA.length(); j++) {
 				if (sequenceA.charAt(j - 1) == sequenceA.charAt(i - 1))
 					res[i][j] = res[i - 1][j - 1] + MATCH;
 				else
 					res[i][j] = 0;
-				if(max<=res[i][j]){
+				if(max < res[i][j]){
 					max = res[i][j];
-					maxi=i;maxj=j;
+//					pos.clear();
+//					pos.add(new Position(i,j));
 				}
+				
+//				else if(max == res[i][j]){
+//					pos.add(new Position(i,j));
+//				}
 //				res[i][j] = Math.max(Math.max(res[i - 1][j - 1] + score, res[i - 1][j] + GAP_PENALTY),
 //						Math.max(res[i][j - 1] + GAP_PENALTY, 0));
 			}
 		}
-
+		pos = findMaxPositions(max,res);
+		ArrayList<String> r = new ArrayList<>();
 		//return res;
 		StringBuilder result = new StringBuilder();
+		for(Position p: pos){
+			maxi = p.getRow(); maxj = p.getCol();
 		while(res[maxi][maxj]>0){
 			result.append(sequenceA.charAt(maxi-1));
 			maxi-=1;maxj-=1;
 		}
-		
-		System.out.println(result.reverse().toString());
+		r.add(result.reverse().toString());
+		result = new StringBuilder();
+		}
+		for(String temp:r)
+		System.out.println(temp);
+		System.out.println("---end of tandem dp---");
+	}
+
+	private  ArrayList<Position> findMaxPositions(int max, int[][] res) {
+		ArrayList<Position> p = new ArrayList<>();
+		for(int i=0;i<res.length;i++){
+			for(int j=i+1;j<res.length;j++){
+				if(max == res[i][j]){
+					p.add(new Position(i,j));
+				}
+			}
+		}
+		return p;
 	}
 
 //	public static Position findMax(int[][] matrix) {
@@ -309,23 +335,25 @@ public class TandemDP {
 //	}
 //}
 //
-//class Position {
-//	private int row, col;
-//
-//	Position() {
-//		;
-//	}
-//
-//	Position(int row, int col) {
-//		this.row = row;
-//		this.col = col;
-//	}
-//
-//	public int getRow() {
-//		return row;
-//	}
-//
-//	public int getCol() {
-//		return col;
-//	}
+}
+class Position {
+	private int row, col;
+
+	Position() {
+		;
+	}
+
+	Position(int row, int col) {
+		this.row = row;
+		this.col = col;
+	}
+
+	public int getRow() {
+		return row;
+	}
+
+	public int getCol() {
+		return col;
+	}
+	
 }
