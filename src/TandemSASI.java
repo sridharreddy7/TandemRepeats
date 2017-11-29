@@ -37,16 +37,23 @@ public class TandemSASI {
 //        }
 
         // find longest repeated substring by comparing adjacent sorted suffixes
-        String lrs = "";
+    	int length = 0;
+    	ArrayList<String> lrs= new ArrayList<String>();
         ArrayList<String> res= new ArrayList<String>();
         for (int i = 0; i < n-1; i++) {
             String x = lcp(suffixes[i], suffixes[i+1]);
             if(x.length()>=2){
               res.add(x);
             }
-            if (x.length() > lrs.length()){
-              lrs = x;
+            
+             if(x.length() == length){
+            	lrs.add(x);
             }
+             else if (x.length() > length){
+             	length = x.length();
+             	lrs.clear();
+               lrs.add(x);
+             }
         }
         
         for(int i=0;i<res.size();i++){
